@@ -7,21 +7,14 @@
 //+------------------------------------------------------------------+
 
 //+------------------------------------------------------------------+
-//| Notes de version                                                 |
-//|01/03/2025 - Ajout d'un filtre temporel                           |
-//|19/03/2025 - Suppression du filtre temporel                       |
-//+------------------------------------------------------------------+
-
-//+------------------------------------------------------------------+
 //| Include                                                          |
 //+------------------------------------------------------------------+
 #property copyright "Copyright 2024-2025, Lucas Troncy"
 #include <Expert\ExpertBase.mqh>
 #include <Expert\Expert_eLib\ExpertSignal_eLib.mqh>
-#include <Expert\ExpertTrade.mqh>
-#include <Expert\ExpertMoney.mqh>
-#include <Expert\ExpertTrailing.mqh>
-
+#include <Expert\Expert_eLib\ExpertMoney_eLib.mqh>
+#include <Expert\Expert_eLib\ExpertTrailing_eLib.mqh>
+#include <Expert\Expert_eLib\ExpertTrade_eLib.mqh>
 //+------------------------------------------------------------------+
 //| enumerations                                                     |
 //+------------------------------------------------------------------+

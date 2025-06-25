@@ -1,8 +1,6 @@
 //+------------------------------------------------------------------+
-//|                                           ExpertSignal_eLib.mqh  |
-//|    Extension propre de la classe CExpertSignal (MetaQuotes)      |
-//|    Ajouts : FiltersTotal(), IgnoreLastFilter(),                  |
-//|            surcharge de Direction(), ajout de SignalMinPeriod()  |
+//|                                          ExpertSignal_eLib.mqh   |
+//|                                     Copyright 2025, Lucas TRONCY |
 //+------------------------------------------------------------------+
 #ifndef __EXPERT_SIGNAL_LIB_MQH__
 #define __EXPERT_SIGNAL_LIB_MQH__
@@ -10,6 +8,12 @@
 #include <Expert/ExpertSignal.mqh>
 #include <Expert/Utils/UtilsLTR.mqh>
 
+//+------------------------------------------------------------------+
+//|                                           ExpertSignal_eLib.mqh  |
+//|    Extension propre de la classe CExpertSignal (MetaQuotes)      |
+//|    Ajouts : FiltersTotal(), IgnoreLastFilter(),                  |
+//|            surcharge de Direction(), ajout de SignalMinPeriod()  |
+//+------------------------------------------------------------------+
 class CExpertSignal_eLib : public CExpertSignal
   {
 public:
@@ -133,3 +137,4 @@ void CExpertSignal_eLib::IgnoreLastFilter(void)
   }
 
 #endif // __EXPERT_SIGNAL_LIB_MQH__
+//+------------------------------------------------------------------+
