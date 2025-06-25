@@ -15,7 +15,7 @@
 //| Include                                                          |
 //+------------------------------------------------------------------+
 #property copyright "Copyright 2024, Lucas Troncy"
-#include <Expert\Expert_eLib\ExpertAsymetrique_eLib.mqh>
+#include <Expert\Expert_eLib\ExpertAsymetrique.mqh>
 //+------------------------------------------------------------------+
 //| Declaration                                                      |
 //+------------------------------------------------------------------+

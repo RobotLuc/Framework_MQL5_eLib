@@ -1,5 +1,5 @@
 //+------------------------------------------------------------------+
-//|                                          ExpertSignal_eLib.mqh   |
+//|                                          ExpertSignalMultiP.mqh   |
 //|                                     Copyright 2025, Lucas TRONCY |
 //+------------------------------------------------------------------+
 #ifndef __EXPERT_SIGNAL_LIB_MQH__
@@ -9,16 +9,16 @@
 #include <Expert/Utils/UtilsLTR.mqh>
 
 //+------------------------------------------------------------------+
-//|                                           ExpertSignal_eLib.mqh  |
+//|                                           ExpertSignalMultiP.mqh  |
 //|    Extension propre de la classe CExpertSignal (MetaQuotes)      |
 //|    Ajouts : FiltersTotal(), IgnoreLastFilter(),                  |
 //|            surcharge de Direction(), ajout de SignalMinPeriod()  |
 //+------------------------------------------------------------------+
-class CExpertSignal_eLib : public CExpertSignal
+class CExpertSignalMultiP : public CExpertSignal
   {
 public:
-                     CExpertSignal_eLib(void);
-                    ~CExpertSignal_eLib(void);
+                     CExpertSignalMultiP(void);
+                    ~CExpertSignalMultiP(void);
 
    // Ajouts
    int               FiltersTotal(void) const;
@@ -35,33 +35,33 @@ public:
 //+------------------------------------------------------------------+
 //| Constructor                                                      |
 //+------------------------------------------------------------------+
-CExpertSignal_eLib::CExpertSignal_eLib(void) : CExpertSignal()
+CExpertSignalMultiP::CExpertSignalMultiP(void) : CExpertSignal()
   {
   }
 //+------------------------------------------------------------------+
 //| Destructor                                                       |
 //+------------------------------------------------------------------+
-CExpertSignal_eLib::~CExpertSignal_eLib(void)
+CExpertSignalMultiP::~CExpertSignalMultiP(void)
   {
   }
 //+------------------------------------------------------------------+
 //| Nombre de filtres                                                |
 //+------------------------------------------------------------------+
-int CExpertSignal_eLib::FiltersTotal(void) const
+int CExpertSignalMultiP::FiltersTotal(void) const
   {
    return m_filters.Total();
   }
 //+------------------------------------------------------------------+
 //| Masque de filtres ignorés                                        |
 //+------------------------------------------------------------------+
-long CExpertSignal_eLib::Ignore(void) const
+long CExpertSignalMultiP::Ignore(void) const
   {
    return m_ignore;
   }
 //+------------------------------------------------------------------+
 //| Calcul de la direction pondérée (surcharge avec log)            |
 //+------------------------------------------------------------------+
-double CExpertSignal_eLib::Direction(void)
+double CExpertSignalMultiP::Direction(void)
   {
    long   mask;
    double direction;
@@ -75,7 +75,7 @@ double CExpertSignal_eLib::Direction(void)
       if((m_ignore & mask) != 0)
          continue;
 
-      CExpertSignal_eLib *filter = m_filters.At(i);
+      CExpertSignalMultiP *filter = m_filters.At(i);
       if(filter == NULL)
          continue;
 
@@ -102,7 +102,7 @@ double CExpertSignal_eLib::Direction(void)
 //+------------------------------------------------------------------+
 //| Détection de la plus petite timeframe utilisée                   |
 //+------------------------------------------------------------------+
-ENUM_TIMEFRAMES CExpertSignal_eLib::SignalMinPeriod(void)
+ENUM_TIMEFRAMES CExpertSignalMultiP::SignalMinPeriod(void)
   {
    ENUM_TIMEFRAMES min_period = WRONG_VALUE;
    if(m_has_tf_significance)
@@ -111,7 +111,7 @@ ENUM_TIMEFRAMES CExpertSignal_eLib::SignalMinPeriod(void)
    int total = m_filters.Total();
    for(int i = 0; i < total; i++)
      {
-      CExpertSignal_eLib *filter = m_filters.At(i);
+      CExpertSignalMultiP *filter = m_filters.At(i);
       if(filter == NULL || !filter.HasTimeframeSignificance())
          continue;
 
@@ -127,7 +127,7 @@ ENUM_TIMEFRAMES CExpertSignal_eLib::SignalMinPeriod(void)
 //+------------------------------------------------------------------+
 //| Ignore le dernier filtre ajouté                                  |
 //+------------------------------------------------------------------+
-void CExpertSignal_eLib::IgnoreLastFilter(void)
+void CExpertSignalMultiP::IgnoreLastFilter(void)
   {
    int total = m_filters.Total();
    if(total == 0)

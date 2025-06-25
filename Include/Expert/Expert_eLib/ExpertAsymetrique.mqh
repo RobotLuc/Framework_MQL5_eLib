@@ -11,7 +11,7 @@
 //+------------------------------------------------------------------+
 #property copyright "Copyright 2024-2025, Lucas Troncy"
 #include <Expert\ExpertBase.mqh>
-#include <Expert\Expert_eLib\ExpertSignal_eLib.mqh>
+#include <Expert\Expert_eLib\ExpertSignalMultiP.mqh>
 #include <Expert\Expert_eLib\ExpertMoney_eLib.mqh>
 #include <Expert\Expert_eLib\ExpertTrailing_eLib.mqh>
 #include <Expert\Expert_eLib\ExpertTrade_eLib.mqh>
@@ -64,11 +64,11 @@ protected:
    //---
    int               m_waiting_event;            // flags of expected trade events
    //--- trading objects
-   CExpertTrade      *m_trade;                    // trading object
-   CExpertSignal_eLib     *m_signal_open;              // trading open signals object
-   CExpertSignal_eLib     *m_signal_close;             // trading close signals object
-   CExpertMoney      *m_money;                    // money manager object
-   CExpertTrailing   *m_trailing;                 // trailing stops object
+   CExpertTrade_eLib       *m_trade;                    // trading object
+   CExpertSignalMultiP     *m_signal_open;              // trading open signals object
+   CExpertSignalMultiP     *m_signal_close;             // trading close signals object
+   CExpertMoney_eLib       *m_money;                    // money manager object
+   CExpertTrailing_eLib    *m_trailing;                 // trailing stops object
    bool              m_check_volume;             // check and decrease trading volume before OrderSend
    //--- indicators
    CIndicators       m_indicators;               // indicator collection to fast recalculations
@@ -90,11 +90,11 @@ public:
    void              Magic(ulong value);
    void              CheckVolumeBeforeTrade(const bool flag) { m_check_volume=flag; }
    //--- initialization trading objects
-   virtual bool      InitSignalOpen(CExpertSignal *signal=NULL);
-   virtual bool      InitSignalClose(CExpertSignal *signal=NULL);
-   virtual bool      InitTrailing(CExpertTrailing *trailing=NULL);
-   virtual bool      InitMoney(CExpertMoney *money=NULL);
-   virtual bool      InitTrade(ulong magic,CExpertTrade *trade=NULL);
+   virtual bool      InitSignalOpen(CExpertSignalMultiP *signal=NULL);
+   virtual bool      InitSignalClose(CExpertSignalMultiP *signal=NULL);
+   virtual bool      InitTrailing(CExpertTrailing_eLib *trailing=NULL);
+   virtual bool      InitMoney(CExpertMoney_eLib *money=NULL);
+   virtual bool      InitTrade(ulong magic,CExpertTrade_eLib *trade=NULL);
    //--- deinitialization
    virtual void      Deinit(void);
    //--- methods of setting adjustable parameters
@@ -106,8 +106,8 @@ public:
    int               MaxOrders(void)                  const { return(m_max_orders);           }
    void              MaxOrders(int value)                   { m_max_orders=value;             }
    //--- methods of access to protected data
-   CExpertSignal     *SignalOpen(void)            const { return(m_signal_open);               }
-   CExpertSignal     *SignalClose(void)           const { return(m_signal_close);              }
+   CExpertSignalMultiP     *SignalOpen(void)            const { return(m_signal_open);               }
+   CExpertSignalMultiP     *SignalClose(void)           const { return(m_signal_close);              }
 
    //--- method of verification of settings
    virtual bool      ValidationSettings();
@@ -336,14 +336,14 @@ void CExpert::Magic(ulong value)
 //+------------------------------------------------------------------+
 //| Initialization trade object                                      |
 //+------------------------------------------------------------------+
-bool CExpert::InitTrade(ulong magic,CExpertTrade *trade=NULL)
+bool CExpert::InitTrade(ulong magic,CExpertTrade_eLib *trade=NULL)
   {
    if(m_trade!=NULL)
       delete m_trade;
 //---
    if(trade==NULL)
      {
-      if((m_trade=new CExpertTrade)==NULL)
+      if((m_trade=new CExpertTrade_eLib)==NULL)
          return(false);
      }
    else
@@ -360,14 +360,14 @@ bool CExpert::InitTrade(ulong magic,CExpertTrade *trade=NULL)
 //+------------------------------------------------------------------+
 //| Initialization open signal object                                |
 //+------------------------------------------------------------------+
-bool CExpert::InitSignalOpen(CExpertSignal *signal)
+bool CExpert::InitSignalOpen(CExpertSignalMultiP *signal)
   {
    if(m_signal_open!=NULL)
       delete m_signal_open;
 //---
    if(signal==NULL)
      {
-      if((m_signal_open=new CExpertSignal)==NULL)
+      if((m_signal_open=new CExpertSignalMultiP)==NULL)
          return(false);
      }
    else
@@ -383,14 +383,14 @@ bool CExpert::InitSignalOpen(CExpertSignal *signal)
 //+------------------------------------------------------------------+
 //| Initialization close signal object                               |
 //+------------------------------------------------------------------+
-bool CExpert::InitSignalClose(CExpertSignal *signal)
+bool CExpert::InitSignalClose(CExpertSignalMultiP *signal)
   {
    if(m_signal_close!=NULL)
       delete m_signal_close;
 //---
    if(signal==NULL)
      {
-      if((m_signal_close=new CExpertSignal)==NULL)
+      if((m_signal_close=new CExpertSignalMultiP)==NULL)
          return(false);
      }
    else
@@ -406,14 +406,14 @@ bool CExpert::InitSignalClose(CExpertSignal *signal)
 //+------------------------------------------------------------------+
 //| Initialization trailing object                                   |
 //+------------------------------------------------------------------+
-bool CExpert::InitTrailing(CExpertTrailing *trailing)
+bool CExpert::InitTrailing(CExpertTrailing_eLib *trailing)
   {
    if(m_trailing!=NULL)
       delete m_trailing;
 //---
    if(trailing==NULL)
      {
-      if((m_trailing=new CExpertTrailing)==NULL)
+      if((m_trailing=new CExpertTrailing_eLib)==NULL)
          return(false);
      }
    else
@@ -429,14 +429,14 @@ bool CExpert::InitTrailing(CExpertTrailing *trailing)
 //+------------------------------------------------------------------+
 //| Initialization money object                                      |
 //+------------------------------------------------------------------+
-bool CExpert::InitMoney(CExpertMoney *money)
+bool CExpert::InitMoney(CExpertMoney_eLib *money)
   {
    if(m_money!=NULL)
       delete m_money;
 //---
    if(money==NULL)
      {
-      if((m_money=new CExpertMoney)==NULL)
+      if((m_money=new CExpertMoney_eLib)==NULL)
          return(false);
      }
    else
