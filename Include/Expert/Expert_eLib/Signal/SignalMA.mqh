@@ -3,7 +3,7 @@
 //|                             Copyright 2000-2025, MetaQuotes Ltd. |
 //|                                             https://www.mql5.com |
 //+------------------------------------------------------------------+
-#include <Expert\Expert_eLib\ExpertSignal_eLib.mqh>
+#include <Expert\Expert_eLib\ExpertSignalMultiP.mqh>
 // wizard description start
 //+------------------------------------------------------------------+
 //| Description of the class                                         |
@@ -25,7 +25,7 @@
 //|          the 'Moving Average' indicator.                         |
 //| Is derived from the CExpertSignal class.                         |
 //+------------------------------------------------------------------+
-class CSignalMA : public CExpertSignal_eLib
+class CSignalMA : public CExpertSignalMultiP
   {
 protected:
    CiMA              m_ma;             // object-indicator

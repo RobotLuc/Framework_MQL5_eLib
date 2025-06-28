@@ -12,9 +12,9 @@
 #property copyright "Copyright 2024-2025, Lucas Troncy"
 #include <Expert\ExpertBase.mqh>
 #include <Expert\Expert_eLib\ExpertSignalMultiP.mqh>
-#include <Expert\Expert_eLib\ExpertMoney_eLib.mqh>
-#include <Expert\Expert_eLib\ExpertTrailing_eLib.mqh>
-#include <Expert\Expert_eLib\ExpertTrade_eLib.mqh>
+#include <Expert\ExpertMoney.mqh>
+#include <Expert\ExpertTrailing.mqh>
+#include <Expert\ExpertTrade.mqh>
 //+------------------------------------------------------------------+
 //| enumerations                                                     |
 //+------------------------------------------------------------------+
@@ -64,11 +64,11 @@ protected:
    //---
    int               m_waiting_event;            // flags of expected trade events
    //--- trading objects
-   CExpertTrade_eLib       *m_trade;                    // trading object
+   CExpertTrade       *m_trade;                    // trading object
    CExpertSignalMultiP     *m_signal_open;              // trading open signals object
    CExpertSignalMultiP     *m_signal_close;             // trading close signals object
-   CExpertMoney_eLib       *m_money;                    // money manager object
-   CExpertTrailing_eLib    *m_trailing;                 // trailing stops object
+   CExpertMoney       *m_money;                    // money manager object
+   CExpertTrailing    *m_trailing;                 // trailing stops object
    bool              m_check_volume;             // check and decrease trading volume before OrderSend
    //--- indicators
    CIndicators       m_indicators;               // indicator collection to fast recalculations
@@ -92,9 +92,9 @@ public:
    //--- initialization trading objects
    virtual bool      InitSignalOpen(CExpertSignalMultiP *signal=NULL);
    virtual bool      InitSignalClose(CExpertSignalMultiP *signal=NULL);
-   virtual bool      InitTrailing(CExpertTrailing_eLib *trailing=NULL);
-   virtual bool      InitMoney(CExpertMoney_eLib *money=NULL);
-   virtual bool      InitTrade(ulong magic,CExpertTrade_eLib *trade=NULL);
+   virtual bool      InitTrailing(CExpertTrailing *trailing=NULL);
+   virtual bool      InitMoney(CExpertMoney *money=NULL);
+   virtual bool      InitTrade(ulong magic,CExpertTrade *trade=NULL);
    //--- deinitialization
    virtual void      Deinit(void);
    //--- methods of setting adjustable parameters
@@ -111,7 +111,9 @@ public:
 
    //--- method of verification of settings
    virtual bool      ValidationSettings();
-   //--- method of creating the indicator and timeseries
+   //--- method of modifying the min period of the Expert
+   virtual bool      InitExpertMinPeriod(void);
+   //--- method of creating the indicator and timeseries   
    virtual bool      InitIndicators(CIndicators *indicators=NULL);
    //--- event handlers
    virtual void      OnTick(void);
@@ -336,14 +338,14 @@ void CExpert::Magic(ulong value)
 //+------------------------------------------------------------------+
 //| Initialization trade object                                      |
 //+------------------------------------------------------------------+
-bool CExpert::InitTrade(ulong magic,CExpertTrade_eLib *trade=NULL)
+bool CExpert::InitTrade(ulong magic,CExpertTrade *trade=NULL)
   {
    if(m_trade!=NULL)
       delete m_trade;
 //---
    if(trade==NULL)
      {
-      if((m_trade=new CExpertTrade_eLib)==NULL)
+      if((m_trade=new CExpertTrade)==NULL)
          return(false);
      }
    else
@@ -406,14 +408,14 @@ bool CExpert::InitSignalClose(CExpertSignalMultiP *signal)
 //+------------------------------------------------------------------+
 //| Initialization trailing object                                   |
 //+------------------------------------------------------------------+
-bool CExpert::InitTrailing(CExpertTrailing_eLib *trailing)
+bool CExpert::InitTrailing(CExpertTrailing *trailing)
   {
    if(m_trailing!=NULL)
       delete m_trailing;
 //---
    if(trailing==NULL)
      {
-      if((m_trailing=new CExpertTrailing_eLib)==NULL)
+      if((m_trailing=new CExpertTrailing)==NULL)
          return(false);
      }
    else
@@ -429,14 +431,14 @@ bool CExpert::InitTrailing(CExpertTrailing_eLib *trailing)
 //+------------------------------------------------------------------+
 //| Initialization money object                                      |
 //+------------------------------------------------------------------+
-bool CExpert::InitMoney(CExpertMoney_eLib *money)
+bool CExpert::InitMoney(CExpertMoney *money)
   {
    if(m_money!=NULL)
       delete m_money;
 //---
    if(money==NULL)
      {
-      if((m_money=new CExpertMoney_eLib)==NULL)
+      if((m_money=new CExpertMoney)==NULL)
          return(false);
      }
    else
@@ -483,49 +485,23 @@ bool CExpert::ValidationSettings(void)
 //--- ok
    return(true);
   }
-//+------------------------------------------------------------------+
-//| Initialization indicators                                        |
-//+------------------------------------------------------------------+
-bool CExpert::InitIndicators(CIndicators *indicators)
+//+----------------------------------------------------------------------------------------------------+
+/// @brief Initializes the effective minimal period across all expert components.                      |
+/// @details Computes the minimal timeframe (in minutes) used by signal, trailing, and money objects.  |
+/// If the expert is configured to run on every tick (m_every_tick), the method exits early and        |
+/// leaves m_period_flags unchanged.                                                                   |
+///                                                                                                    |
+/// @return true if the calculation succeeded or was skipped due to every-tick mode, false otherwise.  |
+//+----------------------------------------------------------------------------------------------------+
+bool CExpert::InitExpertMinPeriod(void)
   {
-//--- NULL always comes as the parameter, but here it's not significant for us
-   CIndicators *indicators_ptr=GetPointer(m_indicators);
-//--- gather information about using of timeseries
-   m_used_series|=m_signal_open.UsedSeries();
-   m_used_series|=m_signal_close.UsedSeries();
-   m_used_series|=m_trailing.UsedSeries();
-   m_used_series|=m_money.UsedSeries();
-//--- create required timeseries
-   if(!CExpertBase::InitIndicators(indicators_ptr))
-      return(false);
-   m_signal_open.SetPriceSeries(m_open,m_high,m_low,m_close);
-   m_signal_open.SetOtherSeries(m_spread,m_time,m_tick_volume,m_real_volume);
-   if(!m_signal_open.InitIndicators(indicators_ptr))
+// --- Si on travaille en mode "every tick", on ne fait rien
+   if(m_every_tick)
      {
-      Print(__FUNCTION__+": error initialization indicators of open signal object");
-      return(false);
+      Print("[InitExpertMinPeriod] Mode tick-par-tick détecté : aucun calcul de période effectué.");
+      return true;
      }
-   m_signal_close.SetPriceSeries(m_open,m_high,m_low,m_close);
-   m_signal_close.SetOtherSeries(m_spread,m_time,m_tick_volume,m_real_volume);
-   if(!m_signal_close.InitIndicators(indicators_ptr))
-     {
-      Print(__FUNCTION__+": error initialization indicators of clse signal object");
-      return(false);
-     }
-   m_trailing.SetPriceSeries(m_open,m_high,m_low,m_close);
-   m_trailing.SetOtherSeries(m_spread,m_time,m_tick_volume,m_real_volume);
-   if(!m_trailing.InitIndicators(indicators_ptr))
-     {
-      Print(__FUNCTION__+": error initialization indicators of trailing object");
-      return(false);
-     }
-   m_money.SetPriceSeries(m_open,m_high,m_low,m_close);
-   m_money.SetOtherSeries(m_spread,m_time,m_tick_volume,m_real_volume);
-   if(!m_money.InitIndicators(indicators_ptr))
-     {
-      Print(__FUNCTION__+": error initialization indicators of money object");
-      return(false);
-     }
+
 // --- Calcul global pour déterminer m_period_flags
    int periods[];   // tableau dynamique pour stocker les périodes en minutes
    int count = 0;
@@ -604,6 +580,15 @@ bool CExpert::InitIndicators(CIndicators *indicators)
          count++;
         }
      }
+
+//--- Case no period found
+   if(count == 0)
+     {
+      m_period_flags = 0;
+      PrintFormat("[DEBUG] Pas de période trouvée, retourne 0");
+      return true;
+     }
+
 // S'il y a au moins un objet avec période, calculer la période globale
    if(count > 0)
      {
@@ -619,15 +604,57 @@ bool CExpert::InitIndicators(CIndicators *indicators)
       // Si le PGCD vaut 1 minute, on retombe sur la plus petite période
       int effectivePeriod = (globalGCD == 1 ? minPeriod : globalGCD);
 
-      /* >>>>>>>>>>>>>> AJOUTE LES TRACES ICI <<<<<<<<<<<<<< */
       for(int i = 0; i < count; i++)
          PrintFormat("periods[%d] = %d (minutes)", i, periods[i]);
-      PrintFormat("effectivePeriod = %d (minutes)", effectivePeriod);
-      /* --------------------------------------------------- */
 
+      PrintFormat("effectivePeriod = %d (minutes)", effectivePeriod);
       // Conversion de la période effective en flag
       m_period_flags = CUtilsLTR::ConvertMinutesToFlag(effectivePeriod);
-
+     }
+   return true;
+  }
+//+------------------------------------------------------------------+
+//| Initialization indicators                                        |
+//+------------------------------------------------------------------+
+bool CExpert::InitIndicators(CIndicators *indicators)
+  {
+//--- NULL always comes as the parameter, but here it's not significant for us
+   CIndicators *indicators_ptr=GetPointer(m_indicators);
+//--- gather information about using of timeseries
+   m_used_series|=m_signal_open.UsedSeries();
+   m_used_series|=m_signal_close.UsedSeries();
+   m_used_series|=m_trailing.UsedSeries();
+   m_used_series|=m_money.UsedSeries();
+//--- create required timeseries
+   if(!CExpertBase::InitIndicators(indicators_ptr))
+      return(false);
+   m_signal_open.SetPriceSeries(m_open,m_high,m_low,m_close);
+   m_signal_open.SetOtherSeries(m_spread,m_time,m_tick_volume,m_real_volume);
+   if(!m_signal_open.InitIndicators(indicators_ptr))
+     {
+      Print(__FUNCTION__+": error initialization indicators of open signal object");
+      return(false);
+     }
+   m_signal_close.SetPriceSeries(m_open,m_high,m_low,m_close);
+   m_signal_close.SetOtherSeries(m_spread,m_time,m_tick_volume,m_real_volume);
+   if(!m_signal_close.InitIndicators(indicators_ptr))
+     {
+      Print(__FUNCTION__+": error initialization indicators of clse signal object");
+      return(false);
+     }
+   m_trailing.SetPriceSeries(m_open,m_high,m_low,m_close);
+   m_trailing.SetOtherSeries(m_spread,m_time,m_tick_volume,m_real_volume);
+   if(!m_trailing.InitIndicators(indicators_ptr))
+     {
+      Print(__FUNCTION__+": error initialization indicators of trailing object");
+      return(false);
+     }
+   m_money.SetPriceSeries(m_open,m_high,m_low,m_close);
+   m_money.SetOtherSeries(m_spread,m_time,m_tick_volume,m_real_volume);
+   if(!m_money.InitIndicators(indicators_ptr))
+     {
+      Print(__FUNCTION__+": error initialization indicators of money object");
+      return(false);
      }
 //--- ok
    return(true);
@@ -749,6 +776,8 @@ bool CExpert::Processing(void)
 //--- calculate signal direction once
    m_signal_open.SetDirection();
    m_signal_close.SetDirection();
+
+
 //--- check if open positions
    if(SelectPosition())
      {

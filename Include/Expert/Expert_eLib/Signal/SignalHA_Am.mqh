@@ -19,7 +19,7 @@
 //+------------------------------------------------------------------+
 //| Include                                                          |
 //+------------------------------------------------------------------+
-#include <Expert\Expert_eLib\ExpertSignal_eLib.mqh>
+#include <Expert\Expert_eLib\ExpertSignalMultiP.mqh>
 //+------------------------------------------------------------------+
 //| Heiken Ashi amélioré, valeurs retournées, pour mémoire           |
 //+------------------------------------------------------------------+
@@ -39,7 +39,7 @@
 //|          the 'Heiken Ashi Amélioré' indicator.                   |
 //| Is derived from the CExpertSignal class.                         |
 //+------------------------------------------------------------------+
-class CSignalHAm : public CExpertSignal
+class CSignalHAm : public CExpertSignalMultiP
   {
 protected:
    CiCustom          m_ham;             // object-indicator

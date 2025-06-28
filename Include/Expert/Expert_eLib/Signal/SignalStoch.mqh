@@ -3,7 +3,7 @@
 //|                             Copyright 2000-2025, MetaQuotes Ltd. |
 //|                                             https://www.mql5.com |
 //+------------------------------------------------------------------+
-#include <Expert\Expert_eLib\ExpertSignal_eLib.mqh>
+#include <Expert\Expert_eLib\ExpertSignalMultiP.mqh>
 // wizard description start
 //+------------------------------------------------------------------+
 //| Description of the class                                         |
@@ -25,7 +25,7 @@
 //|          the 'Stochastic' oscillator.                            |
 //| Is derived from the CExpertSignal class.                         |
 //+------------------------------------------------------------------+
-class CSignalStoch : public CExpertSignal_eLib
+class CSignalStoch : public CExpertSignalMultiP
   {
 protected:
    CiStochastic      m_stoch;          // object-oscillator
