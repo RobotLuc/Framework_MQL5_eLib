@@ -12,10 +12,10 @@
 #ifndef __SIGNAL_BUILDER_MQH__
 #define __SIGNAL_BUILDER_MQH__
 
-#include <Expert\Expert_eLib\Signal\SignalITF.mqh>
+#include <Expert\Expert_eLib\Signal\SignalITF_eLib.mqh>
 #include <Expert\Expert_eLib\Signal\SignalHA_Am.mqh>
-#include <Expert\Expert_eLib\Signal\SignalRSI.mqh>
-#include <Expert\Expert_eLib\Signal\SignalMA.mqh>
+#include <Expert\Expert_eLib\Signal\SignalRSI_eLib.mqh>
+#include <Expert\Expert_eLib\Signal\SignalMA_eLib.mqh>
 #include <Expert\Expert_eLib\Signal\SignalStoch.mqh>
 #include <Expert\Expert_eLib\Signal\SignalCrossMA.mqh>
 #include <Expert\Utils\UtilsLTR.mqh>
@@ -28,17 +28,17 @@ class CSignalBuilder
   {
 public:
    // Interface unifiée
-   static bool       BuildAndAddFilter(CSignalITF *signal, const HAConfig &cfg, bool isactive=true);
-   static bool       BuildAndAddFilter(CSignalITF *signal, const RSIConfig &cfg, bool isactive=true);
-   static bool       BuildAndAddFilter(CSignalITF *signal, const MAConfig &cfg, bool isactive=true);
-   static bool       BuildAndAddFilter(CSignalITF *signal, const StochConfig &cfg, bool isactive=true);
-   static bool       BuildAndAddFilter(CSignalITF *signal, const CrossMAConfig &cfg, bool isactive=true);
+   static bool       BuildAndAddFilter(CSignalITF_eLib *signal, const HAConfig &cfg, bool isactive=true);
+   static bool       BuildAndAddFilter(CSignalITF_eLib *signal, const RSIConfig &cfg, bool isactive=true);
+   static bool       BuildAndAddFilter(CSignalITF_eLib *signal, const MAConfig &cfg, bool isactive=true);
+   static bool       BuildAndAddFilter(CSignalITF_eLib *signal, const StochConfig &cfg, bool isactive=true);
+   static bool       BuildAndAddFilter(CSignalITF_eLib *signal, const CrossMAConfig &cfg, bool isactive=true);
    // Tu ajouteras ici ADXConfig, etc.
 
 private:
    // Fonction utilitaire pour factoriser l'ajout d'un filtre uniquement si isactive == true
    template<typename T>
-   static T*         AddAndConfigureFilter(CSignalITF *signal, bool isactive)
+   static T*         AddAndConfigureFilter(CSignalITF_eLib *signal, bool isactive)
      {
       if(signal == NULL)
          return NULL; // Signal principal NULL = vraie erreur
@@ -61,7 +61,7 @@ private:
 //+------------------------------------------------------------------+
 //| Implémentation : filtre Heikin Ashi                              |
 //+------------------------------------------------------------------+
-bool CSignalBuilder::BuildAndAddFilter(CSignalITF *signal, const HAConfig &cfg, bool isactive)
+bool CSignalBuilder::BuildAndAddFilter(CSignalITF_eLib *signal, const HAConfig &cfg, bool isactive)
   {
 
    if(!isactive)
@@ -99,12 +99,12 @@ bool CSignalBuilder::BuildAndAddFilter(CSignalITF *signal, const HAConfig &cfg, 
 //+------------------------------------------------------------------+
 //| Implémentation : filtre RSI                                      |
 //+------------------------------------------------------------------+
-bool CSignalBuilder::BuildAndAddFilter(CSignalITF *signal, const RSIConfig &cfg, bool isactive)
+bool CSignalBuilder::BuildAndAddFilter(CSignalITF_eLib *signal, const RSIConfig &cfg, bool isactive)
   {
    if(!isactive)
       return true; // **signal non actif : c'est un succès, pas une erreur**
 
-   CSignalRSI *filter = AddAndConfigureFilter<CSignalRSI>(signal, isactive);
+   CSignalRSI_eLib *filter = AddAndConfigureFilter<CSignalRSI_eLib>(signal, isactive);
    if(filter == NULL)
       return false;
 
@@ -137,13 +137,13 @@ bool CSignalBuilder::BuildAndAddFilter(CSignalITF *signal, const RSIConfig &cfg,
 //+------------------------------------------------------------------+
 //| Implémentation : filtre Moyenne Mobile                           |
 //+------------------------------------------------------------------+
-bool CSignalBuilder::BuildAndAddFilter(CSignalITF *signal, const MAConfig &cfg, bool isactive)
+bool CSignalBuilder::BuildAndAddFilter(CSignalITF_eLib *signal, const MAConfig &cfg, bool isactive)
   {
 
    if(!isactive)
       return true; // **signal non actif : c'est un succès, pas une erreur**
 
-   CSignalMA *filter = AddAndConfigureFilter<CSignalMA>(signal, isactive);
+   CSignalMA_eLib *filter = AddAndConfigureFilter<CSignalMA_eLib>(signal, isactive);
    if(filter == NULL)
       return false;
 
@@ -166,7 +166,7 @@ bool CSignalBuilder::BuildAndAddFilter(CSignalITF *signal, const MAConfig &cfg, 
 //+------------------------------------------------------------------+
 //| Implémentation : filtre Stochastique                             |
 //+------------------------------------------------------------------+
-bool CSignalBuilder::BuildAndAddFilter(CSignalITF *signal, const StochConfig &cfg, bool isactive)
+bool CSignalBuilder::BuildAndAddFilter(CSignalITF_eLib *signal, const StochConfig &cfg, bool isactive)
   {
    if(!isactive)
       return true; // **signal non actif : succès sans ajout**
@@ -194,7 +194,7 @@ bool CSignalBuilder::BuildAndAddFilter(CSignalITF *signal, const StochConfig &cf
 //+------------------------------------------------------------------+
 //| Implémentation : filtre CrossMA                                  |
 //+------------------------------------------------------------------+  
-bool CSignalBuilder::BuildAndAddFilter(CSignalITF *signal, const CrossMAConfig &cfg, bool isactive)
+bool CSignalBuilder::BuildAndAddFilter(CSignalITF_eLib *signal, const CrossMAConfig &cfg, bool isactive)
   {
    if(!isactive)
       return true; // signal non actif = succès sans ajout

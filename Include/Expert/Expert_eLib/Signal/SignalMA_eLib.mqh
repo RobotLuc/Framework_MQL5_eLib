@@ -1,31 +1,10 @@
 //+------------------------------------------------------------------+
-//|                                                     SignalMA.mqh |
-//|                             Copyright 2000-2025, MetaQuotes Ltd. |
-//|                                             https://www.mql5.com |
+//|                                                SignalMA_eLib.mqh |
+//|                                  Copyright 2025, Lucas Troncy    |
 //+------------------------------------------------------------------+
 #include <Expert\Expert_eLib\ExpertSignalMultiP.mqh>
-// wizard description start
-//+------------------------------------------------------------------+
-//| Description of the class                                         |
-//| Title=Signals of indicator 'Moving Average'                      |
-//| Type=SignalAdvanced                                              |
-//| Name=Moving Average                                              |
-//| ShortName=MA                                                     |
-//| Class=CSignalMA                                                  |
-//| Page=signal_ma                                                   |
-//| Parameter=PeriodMA,int,12,Period of averaging                    |
-//| Parameter=Shift,int,0,Time shift                                 |
-//| Parameter=Method,ENUM_MA_METHOD,MODE_SMA,Method of averaging     |
-//| Parameter=Applied,ENUM_APPLIED_PRICE,PRICE_CLOSE,Prices series   |
-//+------------------------------------------------------------------+
-// wizard description end
-//+------------------------------------------------------------------+
-//| Class CSignalMA.                                                 |
-//| Purpose: Class of generator of trade signals based on            |
-//|          the 'Moving Average' indicator.                         |
-//| Is derived from the CExpertSignal class.                         |
-//+------------------------------------------------------------------+
-class CSignalMA : public CExpertSignalMultiP
+
+class CSignalMA_eLib : public CExpertSignalMultiP
   {
 protected:
    CiMA              m_ma;             // object-indicator
@@ -46,8 +25,8 @@ protected:
    int               m_pattern_4;      //model 4 : distance entre Price Close et MA pas trop grande
 
 public:
-                     CSignalMA(void);
-                    ~CSignalMA(void);
+                     CSignalMA_eLib(void);
+                    ~CSignalMA_eLib(void);
    //--- methods of setting adjustable parameters
    void              PeriodMA(int value)                 { m_ma_period=value;          }
    void              Shift(int value)                    { m_ma_shift=value;           }
@@ -85,7 +64,7 @@ protected:
 //+------------------------------------------------------------------+
 //| Constructor                                                      |
 //+------------------------------------------------------------------+
-CSignalMA::CSignalMA(void) : m_ma_period(12),
+CSignalMA_eLib::CSignalMA_eLib(void) : m_ma_period(12),
    m_ma_shift(0),
    m_ma_method(MODE_SMA),
    m_ma_applied(PRICE_CLOSE),
@@ -103,13 +82,13 @@ CSignalMA::CSignalMA(void) : m_ma_period(12),
 //+------------------------------------------------------------------+
 //| Destructor                                                       |
 //+------------------------------------------------------------------+
-CSignalMA::~CSignalMA(void)
+CSignalMA_eLib::~CSignalMA_eLib(void)
   {
   }
 //+------------------------------------------------------------------+
 //| Validation settings protected data.                              |
 //+------------------------------------------------------------------+
-bool CSignalMA::ValidationSettings(void)
+bool CSignalMA_eLib::ValidationSettings(void)
   {
 //--- validation settings of additional filters
    if(!CExpertSignal::ValidationSettings())
@@ -132,7 +111,7 @@ bool CSignalMA::ValidationSettings(void)
 //+------------------------------------------------------------------+
 //| Create indicators.                                               |
 //+------------------------------------------------------------------+
-bool CSignalMA::InitIndicators(CIndicators *indicators)
+bool CSignalMA_eLib::InitIndicators(CIndicators *indicators)
   {
 //--- check pointer
    if(indicators==NULL)
@@ -149,7 +128,7 @@ bool CSignalMA::InitIndicators(CIndicators *indicators)
 //+------------------------------------------------------------------+
 //| Initialize MA indicators.                                        |
 //+------------------------------------------------------------------+
-bool CSignalMA::InitMA(CIndicators *indicators)
+bool CSignalMA_eLib::InitMA(CIndicators *indicators)
   {
 //--- check pointer
    if(indicators==NULL)
@@ -172,7 +151,7 @@ bool CSignalMA::InitMA(CIndicators *indicators)
 //+------------------------------------------------------------------+
 //| "Voting" that price will grow.                                   |
 //+------------------------------------------------------------------+
-int CSignalMA::LongCondition(void)
+int CSignalMA_eLib::LongCondition(void)
   {
    int result=0;
    int idx   =StartIndex();
@@ -230,7 +209,7 @@ int CSignalMA::LongCondition(void)
 //+------------------------------------------------------------------+
 //| "Voting" that price will fall.                                   |
 //+------------------------------------------------------------------+
-int CSignalMA::ShortCondition(void)
+int CSignalMA_eLib::ShortCondition(void)
   {
    int result=0;
    int idx   =StartIndex();
