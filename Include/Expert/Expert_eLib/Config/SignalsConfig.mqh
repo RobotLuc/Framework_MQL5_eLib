@@ -48,7 +48,7 @@ struct RSIConfig
    double             seuil_maximum;   // ➔ pour motif 6 (haut)
    double             seuil_medianmin; // ➔ pour motif 6 (short)
    double             seuil_minimum;   // ➔ pour motif 6 (bas)
-   bool               trend_strategy;
+   bool               emergency_stop;
   };
 
 //+------------------------------------------------------------------+

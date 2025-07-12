@@ -130,7 +130,7 @@ bool CSignalBuilder::BuildAndAddFilter(CSignalITF_eLib *signal, const RSIConfig 
    filter.SeuilMaximum(cfg.seuil_maximum);
    filter.SeuilMedianMin(cfg.seuil_medianmin);
    filter.SeuilMinimum(cfg.seuil_minimum);
-   filter.TrendStrategy(cfg.trend_strategy);
+   filter.EmergencyStop(cfg.emergency_stop);
 
    return filter.ValidationSettings();
   }
