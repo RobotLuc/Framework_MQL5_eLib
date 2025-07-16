@@ -19,7 +19,7 @@
 //+------------------------------------------------------------------+
 //| Declaration                                                      |
 //+------------------------------------------------------------------+
-class CExpertDir : public CExpert
+class CExpertDir : public CExpertAsymetrique
   {
 protected:
    bool              m_allow_long;
@@ -53,7 +53,7 @@ CExpertDir::~CExpertDir(void)
 //+------------------------------------------------------------------+
 bool CExpertDir::ValidationSettings(void)
   {
-   if(!CExpert::ValidationSettings())
+   if(!CExpertAsymetrique::ValidationSettings())
       return(false);
 
 //--- Vérification spécifique AllowLong / AllowShort
@@ -76,7 +76,7 @@ bool CExpertDir::CheckOpenLong(void)
    double tp = 0.0;
    datetime expiration = TimeCurrent();
 
-   if(m_signal_open.CheckOpenLong(price, sl, tp, expiration))
+   if(SignalOpen().CheckOpenLong(price, sl, tp, expiration))
      {
       if(!m_allow_long)
         {
@@ -101,7 +101,7 @@ bool CExpertDir::CheckOpenShort(void)
    double tp = 0.0;
    datetime expiration = TimeCurrent();
 
-   if(m_signal_open.CheckOpenShort(price, sl, tp, expiration))
+   if(SignalOpen().CheckOpenShort(price, sl, tp, expiration))
      {
       if(!m_allow_short)
         {
