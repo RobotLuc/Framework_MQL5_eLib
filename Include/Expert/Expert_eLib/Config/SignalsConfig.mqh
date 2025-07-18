@@ -89,8 +89,8 @@ struct StochConfig
 struct CrossMAConfig
   {
    ENUM_TIMEFRAMES     tf;               // Temporalité
-   int                 poids[5];         // Poids des motifs 0 à 4
-   bool                enabled[5];       // Activation motifs 0 à 4
+   int                 poids[1];         // Poids des motifs 0
+   bool                enabled[1];       // Activation motifs 0
 
    // Paramètres MA rapide
    int                 period_fast;

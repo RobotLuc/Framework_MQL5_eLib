@@ -207,10 +207,6 @@ bool CSignalBuilder::BuildAndAddFilter(CSignalITF_eLib *signal, const CrossMACon
    filter.PatternsUsage(CUtilsLTR::EncodeBitmask(cfg.enabled));
 
    filter.Pattern_0(cfg.poids[0]);
-   filter.Pattern_1(cfg.poids[1]);
-   filter.Pattern_2(cfg.poids[2]);
-   filter.Pattern_3(cfg.poids[3]);
-   filter.Pattern_4(cfg.poids[4]);
 
    // Paramètres MA rapide
    filter.PeriodFast(cfg.period_fast);
