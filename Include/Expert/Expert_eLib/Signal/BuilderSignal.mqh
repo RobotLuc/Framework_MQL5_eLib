@@ -219,6 +219,7 @@ bool CSignalBuilder::BuildAndAddFilter(CSignalITF_eLib *signal, const CrossMACon
    filter.ShiftSlow(cfg.shift_slow);
    filter.MethodSlow(cfg.method_slow);
    filter.PriceSlow(cfg.price_slow);
+   filter.PercentChangeSlowMA(cfg.percent_change_maslow);
 
    return filter.ValidationSettings();
   }

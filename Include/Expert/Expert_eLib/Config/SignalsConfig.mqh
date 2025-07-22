@@ -103,6 +103,7 @@ struct CrossMAConfig
    int                 shift_slow;
    ENUM_MA_METHOD      method_slow;
    ENUM_APPLIED_PRICE  price_slow;
+   double              percent_change_maslow;
   };
 
 #endif // __SIGNAL_CONFIGS_MQH__
