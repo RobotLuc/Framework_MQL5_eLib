@@ -33,7 +33,7 @@ public:
 protected:
    static const double PASS_VALUE;
   };
-const double CExpertSignalMultiP::PASS_VALUE = DBL_MAX;
+const double CExpertSignalMultiP::PASS_VALUE = -DBL_MAX;
 //+------------------------------------------------------------------+
 //| Constructor                                                      |
 //+------------------------------------------------------------------+
@@ -77,7 +77,7 @@ double CExpertSignalMultiP::Direction(void)
       if((m_ignore & mask) != 0)
          continue;
 
-      CExpertSignal *filter = m_filters.At(i); // On utilise le polymorphisme pour appeler un pointer vers CExpertSignal ou CExpertSignalMultiP
+      CExpertSignalMultiP *filter = m_filters.At(i); // On utilise le polymorphisme pour appeler un pointer vers CExpertSignal ou CExpertSignalMultiP
       if(filter == NULL)
          continue;
 
@@ -107,7 +107,7 @@ double CExpertSignalMultiP::Direction(void)
       result /= number;
 
    if(result != 0)
-      PrintFormat("Résultat du vote pondéré : %f", result);
+      PrintFormat("[MultiP] Résultat du vote pondéré : %f", result);
 
    return result;
   }
