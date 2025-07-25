@@ -30,8 +30,10 @@ public:
 
    // Méthode utilitaire
    void              IgnoreLastFilter(void);
+protected:
+   static const double PASS_VALUE;
   };
-
+const double CExpertSignalMultiP::PASS_VALUE = DBL_MAX;
 //+------------------------------------------------------------------+
 //| Constructor                                                      |
 //+------------------------------------------------------------------+
@@ -75,14 +77,24 @@ double CExpertSignalMultiP::Direction(void)
       if((m_ignore & mask) != 0)
          continue;
 
-      CExpertSignalMultiP *filter = m_filters.At(i);
+      CExpertSignal *filter = m_filters.At(i); // On utilise le polymorphisme pour appeler un pointer vers CExpertSignal ou CExpertSignalMultiP
       if(filter == NULL)
          continue;
 
       direction = filter.Direction();
-      if(direction == EMPTY_VALUE)
-         return EMPTY_VALUE;
 
+      if(direction == EMPTY_VALUE)
+        {
+         PrintFormat("[MultiP] Filter %d cancel vote (EMPTY_VALUE).", i);
+         return EMPTY_VALUE;
+        }         
+
+      // Skip transparent (charon)
+      if(direction == CExpertSignalMultiP::PASS_VALUE)
+        {
+         PrintFormat("[MultiP] Filter %d skipped (PASS_VALUE).", i);
+         continue;
+        }
       if((m_invert & mask) != 0)
          result -= direction;
       else
