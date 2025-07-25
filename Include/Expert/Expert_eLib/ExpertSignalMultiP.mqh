@@ -95,7 +95,7 @@ double CExpertSignalMultiP::Direction(void)
       result /= number;
 
    if(result != 0)
-      CUtilsLTR::LogToDesktop(StringFormat("Résultat du vote pondéré : %f", result));
+      PrintFormat("Résultat du vote pondéré : %f", result);
 
    return result;
   }
