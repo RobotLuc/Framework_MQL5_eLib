@@ -106,6 +106,20 @@ struct CrossMAConfig
    double              percent_change_maslow;
   };
 
+//+------------------------------------------------------------------+
+//| Structure pour configurer un filtre RSI AU                       |
+//+------------------------------------------------------------------+
+struct RSI_ESConfig
+  {
+   ENUM_TIMEFRAMES    tf;
+
+   int                period;
+   ENUM_APPLIED_PRICE price;
+   double             seuil_maxES;
+   double             seuil_minES;
+   bool               emergency_stop;
+  };
+
 #endif // __SIGNAL_CONFIGS_MQH__
 //+------------------------------------------------------------------+
 //| Fin du fichier SignalsConfig.mqh                                |

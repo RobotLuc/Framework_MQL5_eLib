@@ -27,6 +27,7 @@ public:
    // Redéfinitions
    virtual double    Direction(void) override;
    virtual ENUM_TIMEFRAMES SignalMinPeriod(void);
+   virtual ENUM_TIMEFRAMES SignalGCDPeriod(void);
 
    // Méthode utilitaire
    void              IgnoreLastFilter(void);
@@ -61,7 +62,7 @@ long CExpertSignalMultiP::Ignore(void) const
    return m_ignore;
   }
 //+------------------------------------------------------------------+
-//| Calcul de la direction pondérée (surcharge avec log)            |
+//| Calcul de la direction pondérée (surcharge avec skip transparent)|
 //+------------------------------------------------------------------+
 double CExpertSignalMultiP::Direction(void)
   {
@@ -77,7 +78,7 @@ double CExpertSignalMultiP::Direction(void)
       if((m_ignore & mask) != 0)
          continue;
 
-      CExpertSignalMultiP *filter = m_filters.At(i); // On utilise le polymorphisme pour appeler un pointer vers CExpertSignal ou CExpertSignalMultiP
+      CExpertSignal *filter = m_filters.At(i); // On utilise le polymorphisme pour appeler un pointer vers CExpertSignal ou CExpertSignalMultiP
       if(filter == NULL)
          continue;
 
@@ -87,7 +88,7 @@ double CExpertSignalMultiP::Direction(void)
         {
          PrintFormat("[MultiP] Filter %d cancel vote (EMPTY_VALUE).", i);
          return EMPTY_VALUE;
-        }         
+        }
 
       // Skip transparent (charon)
       if(direction == CExpertSignalMultiP::PASS_VALUE)
@@ -135,6 +136,43 @@ ENUM_TIMEFRAMES CExpertSignalMultiP::SignalMinPeriod(void)
          min_period = filter_period;
      }
    return min_period;
+  }
+//+------------------------------------------------------------------+
+//| Calcule le PGCD des périodes de tous les filtres (récursif)     |
+//+------------------------------------------------------------------+
+ENUM_TIMEFRAMES CExpertSignalMultiP::SignalGCDPeriod(void)
+  {
+   int gcd_minutes = 0;
+
+// Inclure la période locale si significative
+   if(m_has_tf_significance)
+      gcd_minutes = CUtilsLTR::TimeframeToMinutes(GetPeriod());
+
+   int total = m_filters.Total();
+   for(int i = 0; i < total; i++)
+     {
+      CExpertSignalMultiP *filter = m_filters.At(i);
+      if(filter == NULL || !filter.HasTimeframeSignificance())
+         continue;
+
+      ENUM_TIMEFRAMES tf = filter.SignalGCDPeriod(); // récursivité
+      if(tf == WRONG_VALUE)
+         continue;
+
+      int period_minutes = CUtilsLTR::TimeframeToMinutes(tf);
+      if(period_minutes <= 0)
+        {
+         PrintFormat("[WARNING] Période invalide détectée (%d min), saut du filtre.", period_minutes);
+         continue;
+        }
+
+      if(gcd_minutes == 0)
+         gcd_minutes = period_minutes;
+      else
+         gcd_minutes = CUtilsLTR::GCD(gcd_minutes, period_minutes);
+     }
+
+   return CUtilsLTR::MinutesToTimeframe(gcd_minutes);
   }
 //+------------------------------------------------------------------+
 //| Ignore le dernier filtre ajouté                                  |

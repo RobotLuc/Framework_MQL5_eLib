@@ -15,6 +15,7 @@
 #include <Expert\Expert_eLib\Signal\SignalITF_eLib.mqh>
 #include <Expert\Expert_eLib\Signal\SignalHA_Am.mqh>
 #include <Expert\Expert_eLib\Signal\SignalRSI_eLib.mqh>
+#include <Expert\Expert_eLib\Signal\SignalRSI_ES_eLib.mqh>
 #include <Expert\Expert_eLib\Signal\SignalMA_eLib.mqh>
 #include <Expert\Expert_eLib\Signal\SignalStoch.mqh>
 #include <Expert\Expert_eLib\Signal\SignalCrossMA.mqh>
@@ -33,6 +34,7 @@ public:
    static bool       BuildAndAddFilter(CSignalITF_eLib *signal, const MAConfig &cfg, bool isactive=true);
    static bool       BuildAndAddFilter(CSignalITF_eLib *signal, const StochConfig &cfg, bool isactive=true);
    static bool       BuildAndAddFilter(CSignalITF_eLib *signal, const CrossMAConfig &cfg, bool isactive=true);
+   static bool       BuildAndAddFilter(CSignalITF_eLib *signal, const RSI_ESConfig &cfg, bool isactive=true);
    // Tu ajouteras ici ADXConfig, etc.
 
 private:
@@ -130,7 +132,6 @@ bool CSignalBuilder::BuildAndAddFilter(CSignalITF_eLib *signal, const RSIConfig 
    filter.SeuilMaximum(cfg.seuil_maximum);
    filter.SeuilMedianMin(cfg.seuil_medianmin);
    filter.SeuilMinimum(cfg.seuil_minimum);
-   filter.EmergencyStop(cfg.emergency_stop);
 
    return filter.ValidationSettings();
   }
@@ -223,8 +224,29 @@ bool CSignalBuilder::BuildAndAddFilter(CSignalITF_eLib *signal, const CrossMACon
 
    return filter.ValidationSettings();
   }
+//+------------------------------------------------------------------+
+//| Implémentation : filtre RSI                                      |
+//+------------------------------------------------------------------+
+bool CSignalBuilder::BuildAndAddFilter(CSignalITF_eLib *signal, const RSI_ESConfig &cfg, bool isactive)
+  {
+   if(!isactive)
+      return true; // **signal non actif : c'est un succès, pas une erreur**
 
+   CSignalRSI_ES_eLib *filter = AddAndConfigureFilter<CSignalRSI_ES_eLib>(signal, isactive);
+   if(filter == NULL)
+      return false;
+
+   filter.Period(cfg.tf);
+   filter.PeriodRSI(cfg.period);
+   filter.Applied(cfg.price);
+
+   filter.SeuilMaxES(cfg.seuil_maxES);
+   filter.SeuilMinES(cfg.seuil_minES);
+   filter.EmergencyStop(cfg.emergency_stop);
+
+   return filter.ValidationSettings();
+  }
 #endif // __SIGNAL_BUILDER_MQH__
 //+------------------------------------------------------------------+
 //|   Fin de la classe statique CSignalBuilder                       |
-//+------------------------------------------------------------------+
+
