@@ -120,7 +120,51 @@ struct RSI_ESConfig
    bool               emergency_stop;
   };
 
+//+------------------------------------------------------------------+
+//| Structure pour configurer un filtre 3MA                          |
+//+------------------------------------------------------------------+
+struct MA3Config
+  {
+   ENUM_TIMEFRAMES     tf;               // Temporalité
+   int                 poids[2];         // Poids des motifs 0 et 1
+   bool                enabled[2];       // Activation motifs 0 et 1
+
+   // Paramètres MA rapide
+   int                 period_fast;
+   int                 shift_fast;
+   ENUM_MA_METHOD      method_fast;
+   ENUM_APPLIED_PRICE  price_fast;
+
+   // Paramètres MA moyenne
+   int                 period_medium;
+   int                 shift_medium;
+   ENUM_MA_METHOD      method_medium;
+   ENUM_APPLIED_PRICE  price_medium;
+
+   // Paramètres MA lente
+   int                 period_slow;
+   int                 shift_slow;
+   ENUM_MA_METHOD      method_slow;
+   ENUM_APPLIED_PRICE  price_slow;
+
+   // Contraintes sur la pente (exprimées en pips / candle)
+   double              min_slope_fast;
+   double              min_slope_medium;
+   double              min_slope_slow;
+
+   // Contraintes sur les distances entre MA (exprimées en pips)
+   double              min_distance_fast_medium;
+   double              min_distance_medium_slow;
+
+   // Contraintes sur les ratios de pente (adimensionnés)
+   double              min_ratio_fast_medium;
+   double              max_ratio_fast_medium;
+
+   // Qualité minimale R²
+   double              min_regression_quality;
+
+   // Nombre de bougies pour la régression
+   int                 candle_nbr;
+  };
+
 #endif // __SIGNAL_CONFIGS_MQH__
-//+------------------------------------------------------------------+
-//| Fin du fichier SignalsConfig.mqh                                |
-//+------------------------------------------------------------------+

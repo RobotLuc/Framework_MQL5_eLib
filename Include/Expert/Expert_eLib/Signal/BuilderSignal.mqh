@@ -19,6 +19,7 @@
 #include <Expert\Expert_eLib\Signal\SignalMA_eLib.mqh>
 #include <Expert\Expert_eLib\Signal\SignalStoch.mqh>
 #include <Expert\Expert_eLib\Signal\SignalCrossMA.mqh>
+#include <Expert\Expert_eLib\Signal\Signal3MA.mqh>
 #include <Expert\Utils\UtilsLTR.mqh>
 #include <Expert\Expert_eLib\Config\SignalsConfig.mqh>
 
@@ -35,6 +36,8 @@ public:
    static bool       BuildAndAddFilter(CSignalITF_eLib *signal, const StochConfig &cfg, bool isactive=true);
    static bool       BuildAndAddFilter(CSignalITF_eLib *signal, const CrossMAConfig &cfg, bool isactive=true);
    static bool       BuildAndAddFilter(CSignalITF_eLib *signal, const RSI_ESConfig &cfg, bool isactive=true);
+   static bool       BuildAndAddFilter(CSignalITF_eLib *signal, const MA3Config &cfg, bool isactive=true);
+
    // Tu ajouteras ici ADXConfig, etc.
 
 private:
@@ -246,6 +249,61 @@ bool CSignalBuilder::BuildAndAddFilter(CSignalITF_eLib *signal, const RSI_ESConf
 
    return filter.ValidationSettings();
   }
+//+------------------------------------------------------------------+
+//| Implémentation : filtre 3MA                                      |
+//+------------------------------------------------------------------+
+bool CSignalBuilder::BuildAndAddFilter(CSignalITF_eLib *signal, const MA3Config &cfg, bool isactive)
+  {
+   if(!isactive)
+      return true; // signal inactif = pas d’erreur
+
+   CSignal3MA *filter = AddAndConfigureFilter<CSignal3MA>(signal, isactive);
+   if(filter == NULL)
+      return false;
+
+   filter.Period(cfg.tf);
+   filter.PatternsUsage(CUtilsLTR::EncodeBitmask(cfg.enabled));
+
+   filter.Pattern_0(cfg.poids[0]);
+   filter.Pattern_1(cfg.poids[1]);
+
+   // MA rapide
+   filter.PeriodFast(cfg.period_fast);
+   filter.ShiftFast(cfg.shift_fast);
+   filter.MethodFast(cfg.method_fast);
+   filter.PriceFast(cfg.price_fast);
+
+   // MA moyenne
+   filter.PeriodMedium(cfg.period_medium);
+   filter.ShiftMedium(cfg.shift_medium);
+   filter.MethodMedium(cfg.method_medium);
+   filter.PriceMedium(cfg.price_medium);
+
+   // MA lente
+   filter.PeriodSlow(cfg.period_slow);
+   filter.ShiftSlow(cfg.shift_slow);
+   filter.MethodSlow(cfg.method_slow);
+   filter.PriceSlow(cfg.price_slow);
+
+   // Contraintes de pente
+   filter.MinSlopeFast(cfg.min_slope_fast);
+   filter.MinSlopeMedium(cfg.min_slope_medium);
+   filter.MinSlopeSlow(cfg.min_slope_slow);
+
+   // Distances
+   filter.MinDistanceFastMedium(cfg.min_distance_fast_medium);
+   filter.MinDistanceMediumSlow(cfg.min_distance_medium_slow);
+
+   // Ratios de pente
+   filter.MinSlopeRatioFastMedium(cfg.min_ratio_fast_medium);
+   filter.MaxSlopeRatioFastMedium(cfg.max_ratio_fast_medium);
+
+   // Qualité de régression
+   filter.MinRegressionQuality(cfg.min_regression_quality);
+   filter.RegressionCandleCount(cfg.candle_nbr);
+
+   return filter.ValidationSettings();
+  }  
 #endif // __SIGNAL_BUILDER_MQH__
 //+------------------------------------------------------------------+
 //|   Fin de la classe statique CSignalBuilder                       |

@@ -151,7 +151,7 @@ bool CSignalHAm::ValidationSettings(void)
       return false;
      }
 
-   //--- Validation des seuils de pourcentage
+//--- Validation des seuils de pourcentage
    if(m_pct_big_body     <= 0 || m_pct_big_body     > 1.0 ||
       m_pct_medium_body  <= 0 || m_pct_medium_body  > 1.0 ||
       m_pct_doji_body    <= 0 || m_pct_doji_body    > 1.0 ||
@@ -163,21 +163,25 @@ bool CSignalHAm::ValidationSettings(void)
       return false;
      }
 
-   //--- Validation du nombre de bougies avant le doji
+//--- Validation du nombre de bougies avant le doji
    if(m_ham_dojibefore < 1)
      {
       PrintFormat(__FUNCTION__, ": le paramètre m_ham_dojibefore doit être >= 1 (actuel = %d)", m_ham_dojibefore);
       return false;
      }
 
-   //--- Validation de fullsize_pts si mode absolu
+//--- Validation de fullsize_pts si mode absolu
    if(!m_auto_fullsize && m_fullsize_pts <= 0.0)
      {
       PrintFormat(__FUNCTION__, ": en mode absolu (m_auto_fullsize == false), m_fullsize_pts doit être > 0");
       return false;
      }
-
-   //--- Validation des combinaisons de seuils (mode relatif uniquement)
+   if(!IS_PATTERN_USAGE(0) && !IS_PATTERN_USAGE(1)  && !IS_PATTERN_USAGE(2) && !IS_PATTERN_USAGE(3) && !IS_PATTERN_USAGE(4) && !IS_PATTERN_USAGE(5))
+     {
+      PrintFormat(__FUNCTION__, "at least one pattern must be activated");
+      return false;
+     }
+//--- Validation des combinaisons de seuils (mode relatif uniquement)
    if(m_auto_fullsize || m_fullsize_pts == 0.0)
      {
       if(m_pct_big_body + 2.0 * m_pct_small_wick > 1.0)
@@ -283,8 +287,8 @@ int CSignalHAm::DetectPattern(int idx)
 
 // --- Logging des valeurs critiques ---
    PrintFormat("DetectPattern idx=%d | fullsize_price=%.5f | body=%.5f | upwick=%.5f | downwick=%.5f",
-                             idx, fullsize_price, body, upwick, downwick);
-                             
+               idx, fullsize_price, body, upwick, downwick);
+
    if(fullsize_price <= 0.0 ||
       body == EMPTY_VALUE ||
       upwick == EMPTY_VALUE ||
