@@ -6,7 +6,7 @@
 #define __EXPERT_SIGNAL_LIB_MQH__
 
 #include <Expert/ExpertSignal.mqh>
-#include <Expert/Utils/UtilsLTR.mqh>
+//#include <Expert/Utils/UtilsLTR.mqh>
 
 //+------------------------------------------------------------------+
 //|                                           ExpertSignalMultiP.mqh  |

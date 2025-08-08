@@ -176,11 +176,13 @@ bool CSignalHAm::ValidationSettings(void)
       PrintFormat(__FUNCTION__, ": en mode absolu (m_auto_fullsize == false), m_fullsize_pts doit être > 0");
       return false;
      }
-   if(!IS_PATTERN_USAGE(0) && !IS_PATTERN_USAGE(1)  && !IS_PATTERN_USAGE(2) && !IS_PATTERN_USAGE(3) && !IS_PATTERN_USAGE(4) && !IS_PATTERN_USAGE(5))
+// au moins un pattern actif
+   if(m_patterns_usage == 0)
      {
-      PrintFormat(__FUNCTION__, "at least one pattern must be activated");
-      return false;
+      Print(__FUNCTION__, ": at least one pattern must be activated");
+      return(false);
      }
+
 //--- Validation des combinaisons de seuils (mode relatif uniquement)
    if(m_auto_fullsize || m_fullsize_pts == 0.0)
      {
@@ -217,7 +219,6 @@ bool CSignalHAm::ValidationSettings(void)
 
    return true;
   }
-
 //+------------------------------------------------------------------+
 //| Create indicators.                                               |
 //+------------------------------------------------------------------+
