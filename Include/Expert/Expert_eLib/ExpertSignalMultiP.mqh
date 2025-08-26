@@ -20,20 +20,18 @@ public:
                      CExpertSignalMultiP(void);
                     ~CExpertSignalMultiP(void);
 
-   // Ajouts
-   int               FiltersTotal(void) const;
-   long              Ignore(void) const;
-
    // Redéfinitions
    virtual double    Direction(void) override;
    virtual ENUM_TIMEFRAMES SignalMinPeriod(void);
    virtual ENUM_TIMEFRAMES SignalGCDPeriod(void);
 
    // Méthodes utilitaires
-   void           IgnoreLastFilter(void);
-   int            FiltersTotal()               { return m_filters.Total(); }
-   CExpertSignal* FilterAt(const int index)    { return m_filters.At(index); }
-   int            GetExpiration()              { return m_expiration;        }
+   void              IgnoreLastFilter(void);
+   int               FiltersTotal(void) const     { return m_filters.Total();    }
+   CExpertSignal*    FilterAt(const int index)    { return m_filters.At(index);  }
+   int               GetExpiration()              { return m_expiration;         }
+   long              InvertMask(void)       const { return m_invert;             }
+   long              Ignore(void)           const { return m_ignore;             }
 
 protected:
    static const double PASS_VALUE;
@@ -50,20 +48,6 @@ CExpertSignalMultiP::CExpertSignalMultiP(void) : CExpertSignal()
 //+------------------------------------------------------------------+
 CExpertSignalMultiP::~CExpertSignalMultiP(void)
   {
-  }
-//+------------------------------------------------------------------+
-//| Nombre de filtres                                                |
-//+------------------------------------------------------------------+
-int CExpertSignalMultiP::FiltersTotal(void) const
-  {
-   return m_filters.Total();
-  }
-//+------------------------------------------------------------------+
-//| Masque de filtres ignorés                                        |
-//+------------------------------------------------------------------+
-long CExpertSignalMultiP::Ignore(void) const
-  {
-   return m_ignore;
   }
 //+------------------------------------------------------------------+
 //| Calcul de la direction pondérée (surcharge avec skip transparent)|

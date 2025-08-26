@@ -71,9 +71,23 @@ bool CSignalBuilder::BuildAndAddFilter(CSignalITF_eLib *signal, const HAConfig &
    if(!isactive)
       return true; // **signal non actif : c'est un succès, pas une erreur**
 
+   if(signal == NULL)
+      return false;
+
+   // 1) Index du filtre AVANT l'ajout (append => futur index du nouveau filtre)
+   const int pre_total = signal.FiltersTotal();
+
    CSignalHAm *filter = AddAndConfigureFilter<CSignalHAm>(signal, isactive);
    if(filter == NULL)
       return false;
+
+   // 3) MAJ immédiate du bit d'inversion au bon index
+   {
+      const long curr = signal.InvertMask();                          // getter ajouté dans CExpertSignalMultiP
+      const long upd  = CUtilsLTR::UpdateBitAtIndex(curr, pre_total,  // utilitaire générique (set/clear)
+                                                    cfg.invert);      // bool dans la config du filtre
+      signal.Invert(upd);                                             // setter natif (CExpertSignal::Invert(long))
+   }
 
    filter.Period(cfg.tf);
    filter.PatternsUsage(CUtilsLTR::EncodeBitmask(cfg.enabled));
@@ -108,9 +122,23 @@ bool CSignalBuilder::BuildAndAddFilter(CSignalITF_eLib *signal, const RSIConfig 
    if(!isactive)
       return true; // **signal non actif : c'est un succès, pas une erreur**
 
+   if(signal == NULL)
+      return false;
+
+   // 1) Index du filtre AVANT l'ajout (append => futur index du nouveau filtre)
+   const int pre_total = signal.FiltersTotal();
+   
    CSignalRSI_eLib *filter = AddAndConfigureFilter<CSignalRSI_eLib>(signal, isactive);
    if(filter == NULL)
       return false;
+  
+   // 3) MAJ immédiate du bit d'inversion au bon index
+   {
+      const long curr = signal.InvertMask();                          // getter ajouté dans CExpertSignalMultiP
+      const long upd  = CUtilsLTR::UpdateBitAtIndex(curr, pre_total,  // utilitaire générique (set/clear)
+                                                    cfg.invert);      // bool dans la config du filtre
+      signal.Invert(upd);                                             // setter natif (CExpertSignal::Invert(long))
+   }
 
    filter.Period(cfg.tf);
    filter.PeriodRSI(cfg.period);
@@ -146,10 +174,24 @@ bool CSignalBuilder::BuildAndAddFilter(CSignalITF_eLib *signal, const MAConfig &
    if(!isactive)
       return true; // **signal non actif : c'est un succès, pas une erreur**
 
+   if(signal == NULL)
+      return false;
+
+   // 1) Index du filtre AVANT l'ajout (append => futur index du nouveau filtre)
+   const int pre_total = signal.FiltersTotal();
+   
    CSignalMA_eLib *filter = AddAndConfigureFilter<CSignalMA_eLib>(signal, isactive);
    if(filter == NULL)
       return false;
-
+  
+   // 3) MAJ immédiate du bit d'inversion au bon index
+   {
+      const long curr = signal.InvertMask();                          // getter ajouté dans CExpertSignalMultiP
+      const long upd  = CUtilsLTR::UpdateBitAtIndex(curr, pre_total,  // utilitaire générique (set/clear)
+                                                    cfg.invert);      // bool dans la config du filtre
+      signal.Invert(upd);                                             // setter natif (CExpertSignal::Invert(long))
+   }
+   
    filter.PeriodMA(cfg.period);
    filter.Shift(cfg.shift);
    filter.Method(cfg.method);
@@ -174,10 +216,24 @@ bool CSignalBuilder::BuildAndAddFilter(CSignalITF_eLib *signal, const StochConfi
    if(!isactive)
       return true; // **signal non actif : succès sans ajout**
 
+   if(signal == NULL)
+      return false;
+
+   // 1) Index du filtre AVANT l'ajout (append => futur index du nouveau filtre)
+   const int pre_total = signal.FiltersTotal();
+   
    CSignalStoch *filter = AddAndConfigureFilter<CSignalStoch>(signal, isactive);
    if(filter == NULL)
       return false;
-
+  
+   // 3) MAJ immédiate du bit d'inversion au bon index
+   {
+      const long curr = signal.InvertMask();                          // getter ajouté dans CExpertSignalMultiP
+      const long upd  = CUtilsLTR::UpdateBitAtIndex(curr, pre_total,  // utilitaire générique (set/clear)
+                                                    cfg.invert);      // bool dans la config du filtre
+      signal.Invert(upd);                                             // setter natif (CExpertSignal::Invert(long))
+   }
+   
    filter.Period(cfg.tf);
    filter.PatternsUsage(CUtilsLTR::EncodeBitmask(cfg.enabled));
 
@@ -202,10 +258,24 @@ bool CSignalBuilder::BuildAndAddFilter(CSignalITF_eLib *signal, const CrossMACon
    if(!isactive)
       return true; // signal non actif = succès sans ajout
 
+   if(signal == NULL)
+      return false;
+
+   // 1) Index du filtre AVANT l'ajout (append => futur index du nouveau filtre)
+   const int pre_total = signal.FiltersTotal();
+   
    CSignalCrossMA *filter = AddAndConfigureFilter<CSignalCrossMA>(signal, isactive);
    if(filter == NULL)
       return false;
-
+  
+   // 3) MAJ immédiate du bit d'inversion au bon index
+   {
+      const long curr = signal.InvertMask();                          // getter ajouté dans CExpertSignalMultiP
+      const long upd  = CUtilsLTR::UpdateBitAtIndex(curr, pre_total,  // utilitaire générique (set/clear)
+                                                    cfg.invert);      // bool dans la config du filtre
+      signal.Invert(upd);                                             // setter natif (CExpertSignal::Invert(long))
+   }
+   
    filter.Period(cfg.tf);
    filter.PatternsUsage(CUtilsLTR::EncodeBitmask(cfg.enabled));
 
@@ -234,10 +304,24 @@ bool CSignalBuilder::BuildAndAddFilter(CSignalITF_eLib *signal, const RSI_ESConf
    if(!isactive)
       return true; // **signal non actif : c'est un succès, pas une erreur**
 
+   if(signal == NULL)
+      return false;
+
+   // 1) Index du filtre AVANT l'ajout (append => futur index du nouveau filtre)
+   const int pre_total = signal.FiltersTotal();
+   
    CSignalRSI_ES_eLib *filter = AddAndConfigureFilter<CSignalRSI_ES_eLib>(signal, isactive);
    if(filter == NULL)
       return false;
-
+  
+   // 3) MAJ immédiate du bit d'inversion au bon index
+   {
+      const long curr = signal.InvertMask();                          // getter ajouté dans CExpertSignalMultiP
+      const long upd  = CUtilsLTR::UpdateBitAtIndex(curr, pre_total,  // utilitaire générique (set/clear)
+                                                    cfg.invert);      // bool dans la config du filtre
+      signal.Invert(upd);                                             // setter natif (CExpertSignal::Invert(long))
+   }
+   
    filter.Period(cfg.tf);
    filter.PeriodRSI(cfg.period);
    filter.Applied(cfg.price);
@@ -256,10 +340,24 @@ bool CSignalBuilder::BuildAndAddFilter(CSignalITF_eLib *signal, const MA3Config 
    if(!isactive)
       return true; // signal inactif = pas d’erreur
 
+   if(signal == NULL)
+      return false;
+
+   // 1) Index du filtre AVANT l'ajout (append => futur index du nouveau filtre)
+   const int pre_total = signal.FiltersTotal();
+   
    CSignal3MA *filter = AddAndConfigureFilter<CSignal3MA>(signal, isactive);
    if(filter == NULL)
       return false;
-
+  
+   // 3) MAJ immédiate du bit d'inversion au bon index
+   {
+      const long curr = signal.InvertMask();                          // getter ajouté dans CExpertSignalMultiP
+      const long upd  = CUtilsLTR::UpdateBitAtIndex(curr, pre_total,  // utilitaire générique (set/clear)
+                                                    cfg.invert);      // bool dans la config du filtre
+      signal.Invert(upd);                                             // setter natif (CExpertSignal::Invert(long))
+   }
+   
    filter.Period(cfg.tf);
    filter.PatternsUsage(CUtilsLTR::EncodeBitmask(cfg.enabled));
 

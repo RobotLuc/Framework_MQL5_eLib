@@ -28,6 +28,7 @@ struct HAConfig
    int               dojibefore;        // Nombre de bougies avant le doji
    bool              auto_fullsize;     // true = mode relatif, false = absolu
    double            fullsize_pts;      // Valeur absolue en points (si > 0)
+   bool              invert;            // Bouléen pour inverser le votre du signal
   };
 
 //+------------------------------------------------------------------+
@@ -49,6 +50,7 @@ struct RSIConfig
    double             seuil_medianmin; // ➔ pour motif 6 (short)
    double             seuil_minimum;   // ➔ pour motif 6 (bas)
    bool               emergency_stop;
+   bool               invert;            // Bouléen pour inverser le votre du signal
   };
 
 //+------------------------------------------------------------------+
@@ -66,6 +68,7 @@ struct MAConfig
    ENUM_APPLIED_PRICE  price;
    double              min_ma_change;
    double              diff_price_ma;
+   bool                invert;            // Bouléen pour inverser le votre du signal
   };
 
 //+------------------------------------------------------------------+
@@ -81,6 +84,7 @@ struct StochConfig
    int                periodD;          // %D period
    int                period_slow;      // Smoothing
    ENUM_STO_PRICE     applied_price;    // Source de prix
+   bool               invert;            // Bouléen pour inverser le votre du signal
   };
 
 //+------------------------------------------------------------------+
@@ -104,6 +108,7 @@ struct CrossMAConfig
    ENUM_MA_METHOD      method_slow;
    ENUM_APPLIED_PRICE  price_slow;
    double              percent_change_maslow;
+   bool                invert;            // Bouléen pour inverser le votre du signal
   };
 
 //+------------------------------------------------------------------+
@@ -118,6 +123,7 @@ struct RSI_ESConfig
    double             seuil_maxES;
    double             seuil_minES;
    bool               emergency_stop;
+   bool               invert;            // Bouléen pour inverser le votre du signal
   };
 
 //+------------------------------------------------------------------+
@@ -165,6 +171,8 @@ struct MA3Config
 
    // Nombre de bougies pour la régression
    int                 candle_nbr;
+   bool                invert;            // Bouléen pour inverser le votre du signal
   };
 
 #endif // __SIGNAL_CONFIGS_MQH__
+//+------------------------------------------------------------------+
