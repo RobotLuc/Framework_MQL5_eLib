@@ -29,8 +29,12 @@ public:
    virtual ENUM_TIMEFRAMES SignalMinPeriod(void);
    virtual ENUM_TIMEFRAMES SignalGCDPeriod(void);
 
-   // Méthode utilitaire
-   void              IgnoreLastFilter(void);
+   // Méthodes utilitaires
+   void           IgnoreLastFilter(void);
+   int            FiltersTotal()               { return m_filters.Total(); }
+   CExpertSignal* FilterAt(const int index)    { return m_filters.At(index); }
+   int            GetExpiration()              { return m_expiration;        }
+
 protected:
    static const double PASS_VALUE;
   };

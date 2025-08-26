@@ -307,4 +307,3 @@ bool CSignalBuilder::BuildAndAddFilter(CSignalITF_eLib *signal, const MA3Config 
 //+------------------------------------------------------------------+
 //|   Fin de la classe statique CSignalBuilder                       |
 
-//+------------------------------------------------------------------+
